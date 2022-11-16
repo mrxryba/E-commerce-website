@@ -80,8 +80,17 @@ include_once "./inc/autoloaderIndex.inc.php";
 </body>
 <?php
 
-$product1 = new Product(1,"Iphone 11", 2500,10);
+$product1 = new Product(5,"Iphone 11", 2500,10);
+$product2 = new Product(2, "M2 SSD", 400, 10);
+$product3 = new Product(3, "Samsung Galaxy S20", 3200, 10);
+
 $cart = new Cart();
+$cartItem1  = $cart->addProduct($product1,1);
+
+$cartItem2 = $product2->addToCart($cart,1);
+$cartItem1->decreaseQuantity();
+
+var_dump($cart->getItems());
 
 ?>
 </html>

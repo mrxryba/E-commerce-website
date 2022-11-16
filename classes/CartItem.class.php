@@ -1,6 +1,7 @@
 <?php
 
-class CartItem {
+class CartItem
+{
     private Product $product;
     private int $quantity;
 
@@ -31,11 +32,33 @@ class CartItem {
     }
 
 
-    public function increaseQuantity() {
+    public function increaseQuantity()
+    {
+
+
+
+//        $this->getProduct();
+        if (($this->product->getAvailableQuantity() - 1) >= 0) {
+            $this->quantity++;
+            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - 1);
+
+        } else {
+            echo "Product out of stock";
+        }
+
 
     }
 
-    public function decreaseQuantity() {
+    public function decreaseQuantity()
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() + 1);
+        } else {
+            echo "Remove product. Product quantity can't be less than zero ";
+        }
+
 
     }
+
 }

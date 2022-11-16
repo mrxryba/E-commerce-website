@@ -1,6 +1,7 @@
 <?php
 
-class Product {
+class Product
+{
 
     private int $id;
     private string $title;
@@ -86,13 +87,27 @@ class Product {
     }
 
 
-    public function addToCart (Cart $cart, int $quantity): CartItem
+    public function addToCart(Cart $cart, /*Product $product,*/ int $quantity)
     {
 
+        return $cart->addProduct($this, $quantity);
+//        $items = $cart->getItems();
+//        if (array_key_exists($this->getId(), $items)) {
+//            $CartItem = $items[$this->getId()];
+//            $CartItem->increaseQuantity();
+//        } else {
+//            $CartItem = new CartItem($product, 0);
+//            $items[$this->getId()] = $CartItem;
+//            $CartItem->increaseQuantity();
+//            $cart->setItems($items);
+//        }
     }
 
-    public function removeFromCart (Cart $cart) {
-
+    public function removeFromCart(Cart $cart)
+    {
+        $items = $cart->getItems();
+        unset($items[$this->getId()]);
+        $cart->setItems($items);
     }
 
 

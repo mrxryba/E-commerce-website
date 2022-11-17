@@ -6,6 +6,7 @@ class CartItem
     private int $quantity;
 
     /**
+     * CartItem constructor
      * @param Product $product
      * @param int $quantity
      */
@@ -16,7 +17,8 @@ class CartItem
     }
 
     /**
-     * @return Product
+     *
+     * @return \Product
      */
     public function getProduct(): Product
     {
@@ -24,6 +26,7 @@ class CartItem
     }
 
     /**
+     * Returns quantity of CartItem
      * @return int
      */
     public function getQuantity(): int
@@ -32,33 +35,34 @@ class CartItem
     }
 
 
+    /**
+     * This increases quantity of CartItem which has been added to the cart and decreases quantity of available Product
+     * @return void
+     * @throws Exception
+     */
     public function increaseQuantity()
     {
 
-
-
-//        $this->getProduct();
-        if (($this->product->getAvailableQuantity() - 1) >= 0) {
-            $this->quantity++;
-            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - 1);
-
-        } else {
-            echo "Product out of stock";
+        if (!$this->product->getAvailableQuantity()) {
+            throw new Exception("Product out of stock");
         }
-
-
+        $this->quantity++;
+        $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - 1);
     }
 
+
+    /**
+     * This decreases quantity of CartItem which has been added to the cart and increases quantity of available Product
+     * @return void
+     * @throws Exception
+     */
     public function decreaseQuantity()
     {
-        if ($this->quantity > 1) {
-            $this->quantity--;
-            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() + 1);
-        } else {
-            echo "Remove product. Product quantity can't be less than zero ";
+        if ($this->quantity === 1) {
+            throw new Exception ("Remove product. Product quantity can't be less than one ");
         }
-
-
+        $this->quantity--;
+        $this->product->setAvailableQuantity($this->product->getAvailableQuantity() + 1);
     }
 
 }

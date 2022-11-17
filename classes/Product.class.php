@@ -9,6 +9,7 @@ class Product
     private int $availableQuantity;
 
     /**
+     * Product constructor
      * @param int $id
      * @param string $title
      * @param float $price
@@ -23,7 +24,7 @@ class Product
     }
 
     /**
-     * @return int
+     * @return int ID of Product
      */
     public function getId(): int
     {
@@ -39,7 +40,7 @@ class Product
     }
 
     /**
-     * @return string
+     * @return string Product title
      */
     public function getTitle(): string
     {
@@ -87,27 +88,30 @@ class Product
     }
 
 
-    public function addToCart(Cart $cart, /*Product $product,*/ int $quantity)
+    /**
+     * Adds Product $product into cart. If product already exists in the cart it increases quantity of added product.
+     * This must create CartItem and return CartItem from method
+     * @param Cart $cart
+     * @return CartItem|null
+     * @throws Exception
+     */
+    public function addToCart(Cart $cart)
     {
+        return $cart->addProduct($this);
 
-        return $cart->addProduct($this, $quantity);
-//        $items = $cart->getItems();
-//        if (array_key_exists($this->getId(), $items)) {
-//            $CartItem = $items[$this->getId()];
-//            $CartItem->increaseQuantity();
-//        } else {
-//            $CartItem = new CartItem($product, 0);
-//            $items[$this->getId()] = $CartItem;
-//            $CartItem->increaseQuantity();
-//            $cart->setItems($items);
-//        }
     }
 
+    /**
+     * Remove product from the cart
+     * @param Cart $cart
+     * @return void
+     */
     public function removeFromCart(Cart $cart)
     {
         $items = $cart->getItems();
         unset($items[$this->getId()]);
         $cart->setItems($items);
+        return;
     }
 
 

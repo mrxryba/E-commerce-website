@@ -2,88 +2,94 @@
 
 class Cart
 {
-    private $items = [];
+    /**
+     * @var CartItem[]
+     */
+    private array $items = [];
 
-    public function addProduct(Product $product, int $quantity)
+
+    /**
+     * Adds Product $product into cart. If product already exists in the cart it increases quantity of added product.
+     * This must create CartItem and return CartItem from method
+     * @param Product $product
+     * @return CartItem|null
+     * @throws Exception
+     */
+    public function addProduct(Product $product)
     {
-        if (array_key_exists($product->getId(), $this->items)) {
-            $CartItem = $this->findCartItem($product->getId());
-            $CartItem->increaseQuantity();
-
-        } else {
-            $CartItem = new CartItem($product, 0);
-            $this->items[$product->getId()] = $CartItem;
-            $CartItem->increaseQuantity();
+        $cartItem = $this->findCartItem($product->getId());
+        if (!$cartItem) {
+            $cartItem = new CartItem($product, 0);
+            $this->items[$product->getId()] = $cartItem;
         }
-        return $CartItem;
-
-
+        $cartItem->increaseQuantity();
+        return $cartItem;
     }
 
-    public function CartItemDecreaseQ($product)
-    {
-        $CartItem1 = $this->findCartItem($product->getId());
-//        var_dump($CartItem1);
-        $CartItem1->decreaseQuantity();
-    }
-
-    public function CartItemIncrease($product)
-    {
-        $CartItem1 = $this->findCartItem($product->getId());
-//        var_dump($CartItem1);
-        $CartItem1->increaseQuantity();
-    }
-
-
-    public
-    function removeProduct(Product $product)
+    /**
+     * Remove product from the cart
+     * @param Product $product
+     * @return void
+     */
+    public function removeProduct(Product $product)
     {
         unset($this->items[$product->getId()]);
+        return;
     }
 
-    private
-    function findCartItem(int $productId)
+    /**
+     * This checks if product is added to the cart
+     * @param int $productId
+     * @return CartItem|null
+     */
+    private function findCartItem(int $productId)
     {
         return $this->items[$productId] ?? null;
     }
 
-    public
-    function getTotalQuantity()
+    /**
+     * This returns total number of products added to the cart
+     * @return int
+     */
+    public function getTotalQuantity(): int
     {
-        $Total = 0;
+        $total = 0;
         foreach ($this->items as $key => $item) {
-            var_dump( $CartItem = $item);
-            $Total += $CartItem->getQuantity();
+            $cartItem = $item;
+            $total += $cartItem->getQuantity();
         }
-        echo $Total;
+        return $total;
+
     }
 
-    public
-    function getTotalSum(): float
+    /**
+     * This returns total price of products added to the cart
+     * @return float
+     */
+    public function getTotalSum(): float
     {
-        $Total = 0;
+        $total = 0;
         foreach ($this->items as $key => $item) {
-            $CartItem = $item;
-            $Total += $CartItem->getQuantity() * $CartItem->getProduct()->getPrice();
+            $cartItem = $item;
+            $total += $cartItem->getQuantity() * $cartItem->getProduct()->getPrice();
         }
-        return $Total;
+        return $total;
     }
 
 
     /**
-     * @return array
+     * @return  \CartItem[]
      */
-    public
-    function getItems(): array
+    public function getItems(): array
     {
         return $this->items;
     }
 
     /**
-     * @param array $items
+     *
+     * @param \CartItem[] $items
      */
-    public
-    function setItems(array $items): void
+    public function setItems(array $items): void
     {
         $this->items = $items;
     }

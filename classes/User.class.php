@@ -7,10 +7,10 @@ class User {
     /**
      * @param $name
      */
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
+//    public function __construct($name)
+//    {
+//        $this->name = $name;
+//    }
 
     /**
      * @return mixed

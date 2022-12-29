@@ -1,27 +1,41 @@
 <?php
 
-class Product
+class Product extends Dbh
 {
 
     private int $id;
     private string $title;
     private float $price;
     private int $availableQuantity;
+    private string $image;
 
     /**
      * Product constructor
      * @param int $id
-     * @param string $title
-     * @param float $price
-     * @param int $availableQuantity
      */
-    public function __construct(int $id, string $title, float $price, int $availableQuantity)
+    public function __construct(int $id)
     {
         $this->id = $id;
-        $this->title = $title;
-        $this->price = $price;
-        $this->availableQuantity = $availableQuantity;
+        $data = $this->getProductData();
+        $this->title = $data['name'];
+        $this->price = $data['price'];
+        $this->availableQuantity = $data['quantity'];
+        $this->image = $data['image'];
     }
+
+
+    /**
+     * Returns array with Product data form DB.
+     * @return false|mixed
+     */
+    public function getProductData()
+    {
+        $stmt = $this->connect()->prepare(" SELECT * FROM `products` WHERE product_id =?");
+        $stmt->execute([$this->id]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return end($results);
+    }
+
 
     /**
      * @return int ID of Product
@@ -40,7 +54,7 @@ class Product
     }
 
     /**
-     * @return string Product title
+     * @return string
      */
     public function getTitle(): string
     {
@@ -87,17 +101,35 @@ class Product
         $this->availableQuantity = $availableQuantity;
     }
 
+    /**
+     * @return mixed|string
+     */
+    public function getImage(): mixed
+    {
+        return $this->image;
+    }
 
     /**
-     * Adds Product $product into cart. If product already exists in the cart it increases quantity of added product.
-     * This must create CartItem and return CartItem from method
+     * @param mixed|string $image
+     */
+    public function setImage(mixed $image): void
+    {
+        $this->image = $image;
+    }
+
+
+
+    /**
+     *  Adds Product $product into cart. If product already exists in the cart it increases quantity of added product.
+     * This must create CartItem
      * @param Cart $cart
-     * @return CartItem|null
+     * @param $qty
+     * @return void
      * @throws Exception
      */
-    public function addToCart(Cart $cart)
+    public function addToCart(Cart $cart, $qty)
     {
-        return $cart->addProduct($this);
+        return $cart->addProduct($this, $qty);
 
     }
 

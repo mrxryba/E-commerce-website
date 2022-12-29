@@ -10,7 +10,6 @@ if (!isset($_POST['submit'])) {
 
     $signup = new SignupContr();
     $signup->checkUser($fname, $lname, $email, $pwd);
-//    echo $signup->userExist($email);
-
+    header("Location:../index.php");
 
 }

@@ -10,3 +10,11 @@ if (!isset($_POST['submit'])) {
     $login = new LoginContr();
     $login->checkLogin($email, $pwd);
 }
+
+
+
+
+
+
+
+

@@ -24,10 +24,10 @@ class Login extends Dbh
             echo "Wrong password";
             die;
         } else {
-            $firstname = $result['first_name'];
-            $email = $result['email'];
             session_start();
-            $_SESSION['logged'] = true;
+            $_SESSION['userId'] = $result['user_id'];
+//            header('Location:' . ($_SESSION['userId'] === 5 ? '../managePage.php' : '../index.php'));
+
             header("Location:../index.php");
         }
 

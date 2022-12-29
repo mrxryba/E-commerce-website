@@ -39,8 +39,9 @@ class SignupContr extends Signup
         }
 
         if ($result !== true) {
-            echo "user created";
             $this->setUser($fname, $lname, $email, $pwd);
+            $this->setCart($email);
+
         }
     }
 

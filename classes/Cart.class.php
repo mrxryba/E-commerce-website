@@ -1,40 +1,76 @@
 <?php
 
-class Cart
+class Cart extends Dbh
 {
     /**
      * @var CartItem[]
      */
     private array $items = [];
+    private $savedCartID;
+
 
 
     /**
-     * Adds Product $product into cart. If product already exists in the cart it increases quantity of added product.
-     * This must create CartItem and return CartItem from method
+     * @param $savedCartID
+     */
+    public function __construct($savedCartID)
+    {
+        $this->savedCartID = $savedCartID;
+        $this->initCartItems();
+    }
+
+
+    /**
+     * Checks if the user has added products to his cart which is saved in DB.
+     * If the cart contains products, it creates a new CartItem (and Product) and then adds it to the cart.
+     * @return void
+     */
+    public function initCartItems()
+    {
+        $stmt = $this->connect()->prepare("SELECT * FROM cart_items WHERE saved_cart_id = ?");
+        $stmt->execute([$this->savedCartID]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($results as $result) {
+            $cartItem = new CartItem(new Product($result['product_id']), $result['quantity']);
+            $this->items[$result['product_id']] = $cartItem;
+            $cartItem->changeQuantity();
+        }
+    }
+
+    /**
+     * Adds Product $product into cart as CartItem. If product already exists in the cart it increases quantity of added product.
+     * This must create CartItem.
      * @param Product $product
-     * @return CartItem|null
      * @throws Exception
      */
-    public function addProduct(Product $product)
+    public function addProduct(Product $product, $qty)
     {
         $cartItem = $this->findCartItem($product->getId());
         if (!$cartItem) {
-            $cartItem = new CartItem($product, 0);
+            $cartItem = new CartItem($product, $qty);
             $this->items[$product->getId()] = $cartItem;
+            $cartItem->checkQuantity();
+        } else {
+            $cartItem->checkQuantity($qty);
         }
-        $cartItem->increaseQuantity();
-        return $cartItem;
+        $cartItem->saveCartItem($this->savedCartID, $product, $qty);
+        $this->initCartItems();
     }
+
 
     /**
      * Remove product from the cart
      * @param Product $product
      * @return void
+     * @throws Exception
      */
     public function removeProduct(Product $product)
     {
+        $cartItem = $this->findCartItem($product->getId());
+        $cartItem->removeCartItem($product, $this->getSavedCartID());
         unset($this->items[$product->getId()]);
-        return;
+
+
     }
 
     /**
@@ -59,7 +95,6 @@ class Cart
             $total += $cartItem->getQuantity();
         }
         return $total;
-
     }
 
     /**
@@ -92,6 +127,22 @@ class Cart
     public function setItems(array $items): void
     {
         $this->items = $items;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSavedCartID()
+    {
+        return $this->savedCartID;
+    }
+
+    /**
+     * @param mixed $savedCartID
+     */
+    public function setSavedCartID($savedCartID): void
+    {
+        $this->savedCartID = $savedCartID;
     }
 
 

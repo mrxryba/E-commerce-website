@@ -8,6 +8,7 @@ class User extends Dbh
     private string $username;
     private string $email;
     private string $pwd;
+    private int $phoneNumber;
     private $wishlistID;
     private int $savedCartID;
 
@@ -22,7 +23,7 @@ class User extends Dbh
         $this->email = (string)$data['email'];
         $this->firstname = (string)$data['first_name'];
         $this->lastname = (string)$data['last_name'];
-        $this->username = (string)$data['username'];
+        $this->phoneNumber = (int)$data['phone_number'];
         $this->savedCartID = (int)$data['saved_cart_id'];
         $this->wishlistID = (int)$data['wishlist_id'];
     }
@@ -150,6 +151,25 @@ class User extends Dbh
     {
         $this->pwd = $pwd;
     }
+
+    /**
+     * @return int
+     */
+    public function getPhoneNumber(): int
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * @param int $phoneNumber
+     */
+    public function setPhoneNumber(int $phoneNumber): void
+    {
+        $this->phoneNumber = $phoneNumber;
+    }
+
+
+
 
     /**
      * @return int

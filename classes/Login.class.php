@@ -26,8 +26,6 @@ class Login extends Dbh
         } else {
             session_start();
             $_SESSION['userId'] = $result['user_id'];
-//            header('Location:' . ($_SESSION['userId'] === 5 ? '../managePage.php' : '../index.php'));
-
             header("Location:../index.php");
         }
 

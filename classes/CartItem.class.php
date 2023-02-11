@@ -61,6 +61,21 @@ class CartItem extends Dbh
         }
     }
 
+    public function changeCartItem($savedCartID, $product, $quantity)
+    {
+        $stmt = $this->connect()->prepare("SELECT * FROM cart_items WHERE product_id = ? AND saved_cart_id =?");
+        $stmt->execute([$product->getId(), $savedCartID]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($results)) {
+            $stmt = $this->connect()->prepare("INSERT INTO cart_items VALUES (NULL,?,?,?)");
+            $stmt->execute([$savedCartID, $product->getId(), $quantity]);
+        } else {
+            $stmt = $this->connect()->prepare("UPDATE cart_items SET quantity = ? WHERE saved_cart_id =? AND product_id =?");
+            $stmt->execute([$quantity, $savedCartID, $product->getId()]);
+        }
+    }
+
+
     /**
      * Checks if CartItem exists in user's saved Cart in DB.
      * If exists it deletes this CartItem.
@@ -89,7 +104,7 @@ class CartItem extends Dbh
      * Decreases the AvailableQuantity of product by the quantity of product added to the cart.
      * @return void
      */
-    public function changeQuantity()
+    public function changeAvailableQuantity()
     {
         $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - $this->quantity);
     }
@@ -122,8 +137,22 @@ class CartItem extends Dbh
                 throw new Exception ("Sorry there is not enough amount of product in stock. Available quantity is " . $this->product->getAvailableQuantity() . " pieces");
             }
             $this->quantity += $qty;
-            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - $this->quantity);
+//            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - $this->quantity);
         }
+    }
+
+    public function changeQuantity($qty)
+    {
+//        if ($qty) {
+//            if (!$this->product->getAvailableQuantity()) {
+//                throw new Exception("Product out of stock");
+//            }
+//            if ($qty > $this->product->getAvailableQuantity()) {
+//                throw new Exception ("Sorry there is not enough amount of product in stock. Available quantity is " . $this->product->getAvailableQuantity() . " pieces");
+//            }
+            $this->quantity = $qty;
+//            $this->product->setAvailableQuantity($this->product->getAvailableQuantity() - $this->quantity);
+//        }
     }
 
 

@@ -43,7 +43,6 @@ class Session extends Dbh
      */
     public function checkSessionID()
     {
-//        2
         $stmt = $this->connect()->prepare("SELECT * FROM unlogged_users WHERE session_id =?");
         $stmt->execute([$this->sessionID]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

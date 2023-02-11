@@ -9,7 +9,6 @@ class Cart extends Dbh
     private $savedCartID;
 
 
-
     /**
      * @param $savedCartID
      */
@@ -33,7 +32,7 @@ class Cart extends Dbh
         foreach ($results as $result) {
             $cartItem = new CartItem(new Product($result['product_id']), $result['quantity']);
             $this->items[$result['product_id']] = $cartItem;
-            $cartItem->changeQuantity();
+            $cartItem->changeAvailableQuantity();
         }
     }
 
@@ -57,6 +56,22 @@ class Cart extends Dbh
         $this->initCartItems();
     }
 
+    /**
+     * @throws Exception
+     */
+    public function changeProductQty(Product $product, $qty) {
+        $cartItem = $this->findCartItem($product->getId());
+        if (!$cartItem) {
+            throw new Exception('Product is not in the cart');
+        }else{
+            $cartItem->changeQuantity($qty);
+        }
+        $cartItem->changeCartItem($this->savedCartID, $product, $qty);
+        $this->initCartItems();
+    }
+
+
+
 
     /**
      * Remove product from the cart
@@ -70,6 +85,11 @@ class Cart extends Dbh
         $cartItem->removeCartItem($product, $this->getSavedCartID());
         unset($this->items[$product->getId()]);
 
+
+    }
+
+    public function removeAllProducts()
+    {
 
     }
 

@@ -9,12 +9,11 @@ function toggleMenu() {
 
         // adds the menu (hamburger) icon
         toggle.querySelector("a").innerHTML = "<i class='bx bx-menu' ></i>";
-    }else if (menu.classList.contains("actived")){
+    } else if (menu.classList.contains("actived")) {
         menu.classList.remove("actived");
         menu.classList.add("active");
         toggle.querySelector("a").innerHTML = "<i class='bx bx-x'></i>"
-    }
-    else {
+    } else {
         menu.classList.add("active");
 
         //adds the close (X) icon
@@ -24,11 +23,9 @@ function toggleMenu() {
 
 /*Event Listener*/
 toggle.addEventListener("click", toggleMenu, false);
-////////////////////////////////////////
 
 /*User toggle mobile */
 const user = document.querySelector(".user");
-// const menu = document.querySelector(".menu");
 
 
 
@@ -39,14 +36,14 @@ function userMenu() {
         menu.classList.remove("active");
         toggle.querySelector("a").innerHTML = "<i class='bx bx-menu' ></i>";
         menu.classList.add("actived");
-    }else {
+    } else {
         menu.classList.add("actived");
     }
 }
+
 /*Event Listener*/
 user.addEventListener("click", userMenu, false);
 ///////////////////////////
-
 
 
 /*Activate Submenu*/
@@ -72,50 +69,58 @@ for (let item of items) {
     }
 }
 
-/*Remove from Cart */
-const btnRemover = document.getElementById("removeFromCart");
+/*Add to Cart & Product Qty */
+const addToCartBtn = document.querySelector('.product-add-to-cart');
+addToCartBtn.addEventListener('click', addToCart);
 
-btnRemover.addEventListener("click", function (){
-    fetch("http://localhost:8000/hairshop/functions/removeFromCart.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        },
-
-    })
-        .then((response) => response.text())
-        .then((res) => (document.getElementById("result").innerHTML = res));
-
-
-})
-
-/*Carousel main page*/
-const slider = document.querySelector('.gallery');
-let isDown = false;
-let startX;
-let scrollLeft;
-
-slider.addEventListener('mousedown', e => {
-    isDown = true;
-    slider.classList.add('active');
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
-});
-slider.addEventListener('mouseleave', _ => {
-    isDown = false;
-    slider.classList.remove('active');
-});
-slider.addEventListener('mouseup', _ => {
-    isDown = false;
-    slider.classList.remove('active');
-});
-slider.addEventListener('mousemove', e => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const SCROLL_SPEED = 3;
-    const walk = (x - startX) * SCROLL_SPEED;
-    slider.scrollLeft = scrollLeft - walk;
-});
+function addToCart() {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `inc/addToCart.php?product=${productId}&qty=${productQty}`, true);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            let response = JSON.parse(this.responseText);
+            if (response.error) {
+                console.log(response);
+            } else {
+                document.querySelector('.icon-zero').innerHTML = response.cartQty;
+            }
+        }
+    }
+    xhr.send();
+}
 
 
+
+
+// /*Get qty picked from user at product.php */
+
+const qtyDiv = document.querySelector('.product-qty-section');
+const qtySelect = document.querySelector('.product-qty');
+qtySelect.addEventListener('change', getProductQty);
+
+function getProductQty() {
+    productQty = document.querySelector('.product-qty').value;
+    if (productQty === "9+") {
+        qtySelect.classList.add('hidden');
+        let qtyInput = document.createElement('input');
+        qtyInput.maxLength = 3;
+        qtyInput.classList.add('product-qty-input')
+        qtyDiv.appendChild(qtyInput);
+        qtyInput.focus();
+        qtyInput.addEventListener('change', getInputValue);
+    }
+}
+
+// /*Create and get Qty input from user */
+function getInputValue() {
+    let inputVal = document.querySelector('.product-qty-input').value;
+    let input = document.querySelector('.product-qty-input');
+    if (inputVal < 9) {
+        productQty = inputVal;
+        qtySelect.value = inputVal;
+        qtySelect.classList.remove('hidden');
+        input.remove();
+    }
+    productQty = inputVal;
+}

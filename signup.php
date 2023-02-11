@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once "./inc/autoloaderIndex.inc.php";
+include_once "./inc/traitAutoloaderIndex.php";
 include_once "phpHeader.php";
 include_once "header.php";
 ?>
@@ -29,5 +30,5 @@ include_once "header.php";
 
 <script src="inc/script.js"></script></body>
 </body>
-
+</html>
 

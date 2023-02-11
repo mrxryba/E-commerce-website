@@ -15,4 +15,3 @@ if ($isLogged) {
 } else {
     $cart = new Cart($unloggedUser->getSavedCartID());
 }
-

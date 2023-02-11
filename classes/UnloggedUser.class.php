@@ -11,7 +11,6 @@ class UnloggedUser extends Dbh
     {  $this->sessionID = $sessionID;
          $data = $this->getUnloggedData();
         $this->id = $data['unlogged_user_id'];
-//        $this->hashedSessionIdCookie = $data['hashed_session_id_cookie'];
         $this->savedCartID = $data['saved_cart_id'];
     }
 
@@ -30,8 +29,7 @@ class UnloggedUser extends Dbh
 
         // grab from cookie sessionID and compare with sessions in db
         // if exists assign it as actual sessionID
-//        if not exists insert into db and create saved cart_id
-//
+        //        if not exists insert into db and create saved cart_id
 
     }
 
@@ -98,8 +96,6 @@ class UnloggedUser extends Dbh
     {
         $this->hashedSessionIdCookie = $hashedSessionIdCookie;
     }
-    // function
-    // clear empty saved cart with sessionid after 7 days
 
 
 }

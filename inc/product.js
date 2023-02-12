@@ -129,13 +129,11 @@ function getInputValue() {
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const product = urlParams.get('product')
-console.log(product);
 
 // document.querySelector('.product-wishlist-section').addEventListener('click',createWishlistDivs);
 document.addEventListener('DOMContentLoaded', function () {
     loadWishlists().then(response => {
         wishlists = response
-        console.log(wishlists)
         createWishlistDivs()
     })
 });
@@ -171,14 +169,12 @@ function addProductToWishlist(e) {
         let wishlistDiv = e.target.closest('.product-wishlist-item')
         let wishlistKey = wishlistDiv.getAttribute('data-value');
         let wishlistNumber = wishlists[wishlistKey].wishlistNumber;
-        console.log(wishlistNumber)
 
         let xhr = new XMLHttpRequest();
         xhr.open('GET', `inc/addToWishlist.php?product=${product}&wishlistNumber=${wishlistNumber}`, true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let response = JSON.parse(this.responseText);
-                console.log(response)
                 if (response.productAdded === true) {
                     loadWishlists().then(r => {
                         let fill = 1;
@@ -201,14 +197,12 @@ function removeProductFromWishlist(e) {
         let wishlistDiv = e.target.closest('.product-wishlist-item')
         let wishlistKey = wishlistDiv.getAttribute('data-value');
         let wishlistNumber = wishlists[wishlistKey].wishlistNumber;
-        console.log(wishlistNumber)
 
         let xhr = new XMLHttpRequest();
         xhr.open('GET', `inc/removeFromWishlist.php?product=${product}&wishlistNumber=${wishlistNumber}`, true);
         xhr.onload = function () {
             if (xhr.status === 200) {
                 let response = JSON.parse(this.responseText);
-                console.log(response)
                 if (response.productRemoved === true) {
                     let fill = 0;
                     loadWishlists().then(r => {
@@ -231,14 +225,13 @@ function removeProductFromWishlist(e) {
 /*This creates Wishlist Item Div */
 
 function createWishlistDivs() {
-    console.log(wishlists)
     const modalBody = document.querySelector('.modal-body');
     if ((wishlists.hasOwnProperty('userNotLogged'))) {
         let addBtnDiv = document.querySelector('.product-modal-add-wishlist');
         let loginBtn = document.createElement('a');
         loginBtn.classList.add('product-login-btn');
         loginBtn.href = "login.php";
-        loginBtn.innerText= "Log in"
+        loginBtn.innerText = "Sign in"
         addBtnDiv.innerHTML = "";
         addBtnDiv.appendChild(loginBtn)
 
@@ -250,8 +243,7 @@ function createWishlistDivs() {
         wishlistNotExist.innerText = "You have to log in to use the Wishlist."
         wishlistItem.appendChild(wishlistNotExist);
         modalBody.appendChild(wishlistItem);
-    }else if (wishlists[0].hasOwnProperty('wishlistNotExist')) {
-        console.log('true');
+    } else if (wishlists[0].hasOwnProperty('wishlistNotExist')) {
 
         let wishlistItem = document.createElement('div');
         wishlistItem.classList.add('product-wishlist-item');
@@ -263,9 +255,7 @@ function createWishlistDivs() {
         modalBody.appendChild(wishlistItem);
     } else {
 
-
         for (let i = 0; i < wishlists.length; i++) {
-            //Creating new HTML tags
 
             let wishlistItem = document.createElement('div');
             wishlistItem.classList.add('product-wishlist-item');
@@ -275,12 +265,7 @@ function createWishlistDivs() {
             let wishlistItemInput = document.createElement('span');
             wishlistItemInput.classList.add('material-symbols-outlined');
             wishlistItemInput.classList.add('product-wishlist-item-checkbox');
-            if (!wishlists[i].productAdded) {
-                wishlistItemInput.innerHTML = "check_box_outline_blank";
-            } else {
-                wishlistItemInput.innerHTML = "check_box";
-            }
-
+            !wishlists[i].productAdded ? wishlistItemInput.innerHTML = "check_box_outline_blank" : wishlistItemInput.innerHTML = "check_box";
 
             let wishlistItemTitle = document.createElement('span');
             wishlistItemTitle.classList.add('product-wishlist-item-title');
@@ -295,51 +280,54 @@ function createWishlistDivs() {
     }
 }
 
-/*This creates one Wishlist Item after creating new Wishlist*/
+/*This updates WishlistItem tags after creating new Wishlist*/
 
-function createNewWishlistDiv(wishlistItemKey) {
-
-    if (wishlists[wishlistItemKey]) {
+function createNewWishlistDiv() {
+    loadWishlists().then(r => {
+        let wishlists = r;
         const modalBody = document.querySelector('.modal-body');
-        let wishlistItem = document.createElement('div');
-        wishlistItem.classList.add('product-wishlist-item');
-        wishlistItem.setAttribute('data-value', wishlistItemKey)
+        modalBody.innerHTML = "";
+
+        for (let i = 0; i < wishlists.length; i++) {
+
+            let wishlistItem = document.createElement('div');
+            wishlistItem.classList.add('product-wishlist-item');
+            wishlistItem.setAttribute('data-value', i)
 
 
-        let wishlistItemInput = document.createElement('span');
-        wishlistItemInput.classList.add('material-symbols-outlined');
-        wishlistItemInput.classList.add('product-wishlist-item-checkbox');
-        if (!wishlists[wishlistItemKey].productAdded) {
-            wishlistItemInput.innerHTML = "check_box_outline_blank";
-        } else {
-            wishlistItemInput.innerHTML = "check_box";
+            let wishlistItemInput = document.createElement('span');
+            wishlistItemInput.classList.add('material-symbols-outlined');
+            wishlistItemInput.classList.add('product-wishlist-item-checkbox');
+            !wishlists[i].productAdded ? wishlistItemInput.innerHTML = "check_box_outline_blank" : wishlistItemInput.innerHTML = "check_box";
+
+            let wishlistItemTitle = document.createElement('span');
+            wishlistItemTitle.classList.add('product-wishlist-item-title');
+            wishlistItemTitle.innerText = wishlists[i].wishlistName;
+
+            wishlistItem.appendChild(wishlistItemInput);
+            wishlistItem.appendChild(wishlistItemTitle);
+            modalBody.appendChild(wishlistItem);
+
         }
-
-        let wishlistItemTitle = document.createElement('span');
-        wishlistItemTitle.classList.add('product-wishlist-item-title');
-        wishlistItemTitle.innerText = wishlists[wishlistItemKey].wishlistName;
-
-        wishlistItem.appendChild(wishlistItemInput);
-        wishlistItem.appendChild(wishlistItemTitle);
-        modalBody.appendChild(wishlistItem);
-    }
-    addEventToWishlist();
-
+        addEventToWishlist();
+    });
 }
 
 
 function addEventToWishlist() {
-    let wishlistDiv = document.querySelectorAll('.product-wishlist-item');
-    console.log(wishlists)
-    for (let i = 0; i < wishlists.length; i++) {
-        wishlists[i].productAdded ? wishlistDiv[i].addEventListener('click', removeProductFromWishlist) : wishlistDiv[i].addEventListener('click', addProductToWishlist);
-    }
+    loadWishlists().then(r => {
+        wishlists = r
+        let wishlistDiv = document.querySelectorAll('.product-wishlist-item');
+        for (let i = 0; i < wishlists.length; i++) {
+            wishlists[i].productAdded ? wishlistDiv[i].addEventListener('click', removeProductFromWishlist) : wishlistDiv[i].addEventListener('click', addProductToWishlist);
+        }
+    });
+
 }
 
 
 function updateCheckbox(wishlistDiv, fill) {
 
-    console.log(wishlistDiv)
     let checkbox = wishlistDiv.querySelector('.product-wishlist-item-checkbox');
     fill ? checkbox.innerHTML = "check_box" : checkbox.innerHTML = "check_box_outline_blank"
 
@@ -355,7 +343,6 @@ const cancelWishlistBtn = document.querySelector('#wishlist-form-cancel-btn');
 
 addWishlistBtn.addEventListener('click', function (e) {
     if (e.target.matches('.product-modal-add-btn') || (e.target.matches('.product-modal-add-wishlist'))) {
-        console.log(e.target)
         let sectionVisibility = wishlistSection.getAttribute('data-visible');
         sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
         let divVisibility = wishlistDiv.getAttribute('data-visible');
@@ -408,28 +395,21 @@ function getWishlistNameInput() {
 
 
 function createWishlist() {
-    // const wishlistsBefore = wishlists;
-    let wishlistItemKey = wishlists.length
-    console.log(wishlists.length)
     let xhr = new XMLHttpRequest();
     xhr.open('POST', `inc/createWishlist.php`, true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.onload = function () {
         if (xhr.status === 200) {
             let response = (JSON.parse(this.responseText));
-            console.log(response)
-            let fill = 0;
-            loadWishlists().then(r => {
-                wishlists = r
-                createNewWishlistDiv(wishlistItemKey);
+            createNewWishlistDiv();
+            wishlistNameInput.value = "";
+            //todo create new function to deal with visibility of create new Wishlist btn
+            let sectionVisibility = wishlistSection.getAttribute('data-visible');
+            sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
+            let divVisibility = wishlistDiv.getAttribute('data-visible');
+            divVisibility === "true" ? wishlistDiv.setAttribute('data-visible', 'false') : wishlistDiv.setAttribute('data-visible', 'true');
 
-                let sectionVisibility = wishlistSection.getAttribute('data-visible');
-                sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
-                let divVisibility = wishlistDiv.getAttribute('data-visible');
-                divVisibility === "true" ? wishlistDiv.setAttribute('data-visible', 'false') : wishlistDiv.setAttribute('data-visible', 'true');
-                // updateCheckbox(wishlistDiv, fill)
-                // addEventToWishlist();
-            });
+
         }
     }
     xhr.send(JSON.stringify(wishlistName));

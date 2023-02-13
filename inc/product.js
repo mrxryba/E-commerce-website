@@ -332,11 +332,6 @@ function updateCheckbox(wishlistDiv, fill) {
 
 }
 
-document.addEventListener('click', function (event) {
-    console.log(event)
-    console.log("Clicked:", event.target);
-});
-
 /*Pop up wishlist form */
 const wishlistDiv = document.querySelector('.product-modal-add-wishlist');
 const wishlistSection = document.querySelector('.product-modal-add-wishlist-section');

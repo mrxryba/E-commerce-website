@@ -164,7 +164,6 @@ function loadWishlists() {
 * */
 
 function addProductToWishlist(e) {
-
     if (e.target.matches('.product-wishlist-item') || e.target.parentNode.matches('.product-wishlist-item') || e.target.parentNode.parentNode.matches('.product-wishlist-item')) {
         let wishlistDiv = e.target.closest('.product-wishlist-item')
         let wishlistKey = wishlistDiv.getAttribute('data-value');
@@ -333,31 +332,35 @@ function updateCheckbox(wishlistDiv, fill) {
 
 }
 
+document.addEventListener('click', function (event) {
+    console.log(event)
+    console.log("Clicked:", event.target);
+});
+
 /*Pop up wishlist form */
 const wishlistDiv = document.querySelector('.product-modal-add-wishlist');
 const wishlistSection = document.querySelector('.product-modal-add-wishlist-section');
 
-const addWishlistBtn = document.querySelector('.product-modal-add-btn');
+const addWishlistBtnDiv = document.querySelector('.product-modal-add-wishlist');
 const cancelWishlistBtn = document.querySelector('#wishlist-form-cancel-btn');
 
 
-addWishlistBtn.addEventListener('click', function (e) {
-    if (e.target.matches('.product-modal-add-btn') || (e.target.matches('.product-modal-add-wishlist'))) {
-        let sectionVisibility = wishlistSection.getAttribute('data-visible');
-        sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
-        let divVisibility = wishlistDiv.getAttribute('data-visible');
-        divVisibility === "true" ? wishlistDiv.setAttribute('data-visible', 'false') : wishlistDiv.setAttribute('data-visible', 'true');
-    }
+addWishlistBtnDiv.addEventListener('click', function (e) {
 
+    if (e.target.matches('.product-modal-add-wishlist') || (e.target.matches('.product-modal-add-btn')) || (e.target.matches('#product-modal-add-btn-span')) || (e.target.matches('.product-modal-add-btn-svg')) || (e.target.matches('#product-modal-add-btn-text'))) {
+        changeVisibility();
+    }
 });
 
-cancelWishlistBtn.addEventListener('click', function () {
+function changeVisibility() {
     let sectionVisibility = wishlistSection.getAttribute('data-visible');
     sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
     let divVisibility = wishlistDiv.getAttribute('data-visible');
     divVisibility === "true" ? wishlistDiv.setAttribute('data-visible', 'false') : wishlistDiv.setAttribute('data-visible', 'true');
+}
 
-});
+
+cancelWishlistBtn.addEventListener('click', changeVisibility);
 
 
 /*Creation of new Wishlist*/
@@ -368,8 +371,7 @@ const createBtn = document.querySelector('#wishlist-form-create-btn');
 
 wishlistNameInput.addEventListener('change', getWishlistNameInput);
 createBtn.addEventListener('click', createWishlist);
-//
-//
+
 function getWishlistNameInput() {
     wishlistName = wishlistNameInput.value;
     // console.log(wishlistName.length)
@@ -403,13 +405,7 @@ function createWishlist() {
             let response = (JSON.parse(this.responseText));
             createNewWishlistDiv();
             wishlistNameInput.value = "";
-            //todo create new function to deal with visibility of create new Wishlist btn
-            let sectionVisibility = wishlistSection.getAttribute('data-visible');
-            sectionVisibility === "false" ? wishlistSection.setAttribute('data-visible', 'true') : wishlistSection.setAttribute('data-visible', 'false');
-            let divVisibility = wishlistDiv.getAttribute('data-visible');
-            divVisibility === "true" ? wishlistDiv.setAttribute('data-visible', 'false') : wishlistDiv.setAttribute('data-visible', 'true');
-
-
+            changeVisibility();
         }
     }
     xhr.send(JSON.stringify(wishlistName));

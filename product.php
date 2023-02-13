@@ -52,10 +52,10 @@ include_once "./header.php";
                         </div>
                         <div data-visible="true" class="modal-footer product-modal-add-wishlist">
                             <button class="product-modal-add-btn">
-                                <span><svg class="product-modal-add-btn-svg"
+                                <span id="product-modal-add-btn-span"><svg class="product-modal-add-btn-svg"
                                            xmlns="http://www.w3.org/2000/svg"
                                            viewBox="0 0 24 24"><path d="M12 4.5a.5.5 0 0 1 .5.5v6.5H19a.5.5 0 1 1 0 1h-6.5V19a.5.5 0 1 1-1 0v-6.5H5a.5.5 0 1 1 0-1h6.5V5a.5.5 0 0 1 .5-.5z"></path></svg></span>
-                                <span>Add new Wishlist</span>
+                                <span id="product-modal-add-btn-text">Add new Wishlist</span>
                             </button>
                         </div>
                         <div data-visible="false" class="product-modal-add-wishlist-section">

@@ -1111,6 +1111,7 @@ a {
     display: flex;
     margin-top: 2em;
     margin-left: 14em;
+    margin-right: 2em;
     gap: 1em;
 }
 
